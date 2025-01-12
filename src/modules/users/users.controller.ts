@@ -17,9 +17,8 @@ export class UsersController {
 
       console.log("Filters received:", filters);
 
-  // Если filters уже объект, JSON.parse не нужен
       if (typeof filters === 'string') {
-        filters = JSON.parse(filters); // Парсим только строку
+        filters = JSON.parse(filters);
       }
 
     return this.usersService.getFilteredUsers(filters);

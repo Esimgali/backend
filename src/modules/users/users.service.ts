@@ -27,23 +27,20 @@ export class UsersService {
     const limit = filters.splitter;
     const page = filters.page;
 
-    // Фильтр по полу
     if (filters.male && filters.male !== 'all') {
       query.gender = filters.male;
     }
 
-    // Фильтр по дате
     if (filters.date && filters.date[0] && filters.date[1]) {
       query.dob = {
-        $gte: new Date(Number(filters.date[0])), // начало диапазона
-        $lte: new Date(Number(filters.date[1])), // конец диапазона
+        $gte: new Date(Number(filters.date[0])), 
+        $lte: new Date(Number(filters.date[1])),
       };
     }
 
-    // Определение сортировки
     const sort: any = {};
     if (filters.column === 'name') {
-      sort.firstName = filters.sort === 'byorder' ? 1 : -1; // 1 — по возрастанию, -1 — по убыванию
+      sort.firstName = filters.sort === 'byorder' ? 1 : -1; 
     } else if (filters.column === 'lastname') {
       sort.lastName = filters.sort === 'byorder' ? 1 : -1;
     } else {
@@ -53,18 +50,17 @@ export class UsersService {
     const count = await this.userModel.countDocuments(query).exec();
     const skip = (page - 1) * limit;
 
-    // Выполнение запроса с фильтрами и сортировкой
     const users = await this.userModel
     .find(query)
     .sort(sort)
     .skip(skip)
     .limit(limit)
-    .exec(); // Ждем выполнения запроса
+    .exec();
 
     return {
-      users: users.map((user) => user.toObject()), // Преобразуем документы Mongoose в обычные объекты
-      count: count, // Ваше значение
-      page: 1, // Ваше значение
+      users: users.map((user) => user.toObject()),
+      count: count,
+      page: 1, 
     };  
   }
 }
