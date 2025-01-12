@@ -17,6 +17,11 @@ export class UsersService {
   async getAllUsers(): Promise<User[]> {
     return this.userModel.find().exec();
   }
+
+  async findOne(id: string): Promise<User[]> {
+    return this.userModel.find({id: id}).exec();
+  }
+
   async getFilteredUsers(filters: any): Promise<User[]> {
     const query: any = {};
 
@@ -41,9 +46,7 @@ export class UsersService {
       sort.lastName = filters.sort === 'byorder' ? 1 : -1;
     } else {
       sort.dob = filters.sort === 'increase' ? 1 : -1;
-    }
-    console.log(this.userModel.find(query).sort(sort));
-    
+    }    
 
     // Выполнение запроса с фильтрами и сортировкой
     return this.userModel.find(query).sort(sort).exec();

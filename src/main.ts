@@ -4,6 +4,11 @@ import { AppModule } from './app.module';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  app.enableCors({
+    origin: 'http://localhost:3000', // Разрешить запросы только с фронтенда
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE', // Разрешенные HTTP-методы
+    credentials: true, // Если вы используете cookies
+  });
   await app.listen(process.env.PORT ?? 5000);
 }
 bootstrap();
