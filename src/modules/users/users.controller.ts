@@ -13,7 +13,7 @@ export class UsersController {
   //   }
 
   @Get()
-  async getUsers(@Query() filters: any): Promise<User[]> {
+  async getUsers(@Query() filters: any): Promise<{users: User[], count: number, page: number}> {
 
       console.log("Filters received:", filters);
 

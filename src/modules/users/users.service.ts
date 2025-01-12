@@ -22,8 +22,10 @@ export class UsersService {
     return this.userModel.find({id: id}).exec();
   }
 
-  async getFilteredUsers(filters: any): Promise<User[]> {
+  async getFilteredUsers(filters: any): Promise<{users: User[], count: number, page: number}> {
     const query: any = {};
+    const limit = filters.splitter;
+    const page = filters.page;
 
     // Фильтр по полу
     if (filters.male && filters.male !== 'all') {
@@ -46,9 +48,23 @@ export class UsersService {
       sort.lastName = filters.sort === 'byorder' ? 1 : -1;
     } else {
       sort.dob = filters.sort === 'increase' ? 1 : -1;
-    }    
+    }
+    
+    const count = await this.userModel.countDocuments(query).exec();
+    const skip = (page - 1) * limit;
 
     // Выполнение запроса с фильтрами и сортировкой
-    return this.userModel.find(query).sort(sort).exec();
+    const users = await this.userModel
+    .find(query)
+    .sort(sort)
+    .skip(skip)
+    .limit(limit)
+    .exec(); // Ждем выполнения запроса
+
+    return {
+      users: users.map((user) => user.toObject()), // Преобразуем документы Mongoose в обычные объекты
+      count: count, // Ваше значение
+      page: 1, // Ваше значение
+    };  
   }
 }
